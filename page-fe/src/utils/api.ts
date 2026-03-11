@@ -158,3 +158,52 @@ export async function getPageLayouts(tenantId: string) {
 
   return res.json();
 }
+
+/* --PAGE LIST-- */
+
+export async function getPageById(id: string): Promise<PageDto> {
+  const res = await fetch(`${API_BASE}/pages/${id}`);
+  if (!res.ok) {
+    throw new Error("Load page detail failed");
+  }
+  return res.json();
+}
+
+export async function updatePage(
+  id: string,
+  data: {
+    title?: string | null;
+    desc?: string | null;
+    seoTitle?: string | null;
+    seoDesc?: string | null;
+    status?: string;
+    pageLayoutId?: string | null;
+    overrideJson?: Record<string, unknown>;
+    cssBundlePath?: string | null;
+    syncLayoutToContent?: boolean;
+  },
+): Promise<PageDto> {
+  const res = await fetch(`${API_BASE}/pages/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    throw new Error("Update page failed");
+  }
+
+  return res.json();
+}
+
+export async function deletePage(id: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/pages/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    throw new Error("Delete page failed");
+  }
+}

@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext } from "react"
 import { useContext } from "react"
 
 export type AdminNav = {
   activePanel: string
-  openPanel: (key: string) => void
+  openPanel: (key: string, param?: Record<string, any>) => void
   goBack: () => void
   canGoBack: boolean
 }
