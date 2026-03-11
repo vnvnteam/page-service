@@ -1,0 +1,10 @@
+# Node / Build
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+# Env & Secrets
+.env
+.env.*
+docker-compose.yml

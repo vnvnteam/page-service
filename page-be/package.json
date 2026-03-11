@@ -1,0 +1,43 @@
+{
+  "name": "page-be",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf ./dist && rm -rf ./build",
+    "build": "NODE_ENV=production bun build src/server.ts --drop debugger --minify --target bun --outdir ./build",
+    "compile": "NODE_ENV=production bun build src/server.ts --compile --drop debugger --minify --target bun --outfile ./dist/server.bun",
+    "dev": "bun run --watch src/server.ts",
+    "prod": "bun src/server.ts",
+    "start": "bun run ./build/server.js",
+    "start:bin": "bun ./dist/server.bun",
+    "drizzle_push": "bun drizzle-kit push",
+    "drizzle_generate": "bun drizzle-kit generate",
+    "drizzle_migrate": "bun drizzle-kit migrate",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "-": "^0.0.1",
+    "@elysiajs/static": "^1.4.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "cors": "^2.8.5",
+    "drizzle-orm": "^0.44.7",
+    "elysia": "^1.4.5",
+    "express": "^5.1.0",
+    "pg": "^8.20.0",
+    "postgres": "^3.4.7",
+    "ulid": "^3.0.0"
+  },
+  "packageManager": "bun@1.2.0",
+  "engines": {
+    "node": ">=18",
+    "bun": ">=1.0.0"
+  },
+  "devDependencies": {
+    "@elysiajs/cors": "^1.4.0",
+    "dotenv": "^17.2.3",
+    "drizzle-kit": "^0.31.5"
+  }
+}
