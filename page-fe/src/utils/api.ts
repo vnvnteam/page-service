@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { LayoutJson, PageLayoutEntity } from "@/types/layout";
+import type { LayoutJson, PageLayoutEntity, PageType } from "@/types/layout";
 
 const API_BASE = "http://0.0.0.0:7225";
 
@@ -123,29 +123,29 @@ async function safeReadJson(response: Response): Promise<any> {
 
 /* --PAGE-- */
 
-export async function createPage(data: {
-  tenantId: string;
-  title?: string;
-  desc?: string;
-  seoTitle?: string;
-  seoDesc?: string;
-  status?: string;
-  pageLayoutId?: string | null;
-}) {
-  const res = await fetch(`${API_BASE}/pages`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+// export async function createPage(data: {
+//   tenantId: string;
+//   title?: string;
+//   desc?: string;
+//   seoTitle?: string;
+//   seoDesc?: string;
+//   status?: string;
+//   pageLayoutId?: string | null;
+// }) {
+//   const res = await fetch(`${API_BASE}/pages`, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(data),
+//   });
 
-  if (!res.ok) {
-    throw new Error("Create page failed");
-  }
+//   if (!res.ok) {
+//     throw new Error("Create page failed");
+//   }
 
-  return res.json();
-}
+//   return res.json();
+// }
 
 export async function getPageLayouts(tenantId: string) {
   const res = await fetch(
@@ -161,7 +161,45 @@ export async function getPageLayouts(tenantId: string) {
 
 /* --PAGE LIST-- */
 
-export async function getPageById(id: string): Promise<PageDto> {
+export async function createPage(data: {
+  tenantId: string;
+  title?: string | null;
+  desc?: string | null;
+  seoTitle?: string | null;
+  seoDesc?: string | null;
+  status?: string;
+  pageLayoutId?: string | null;
+  overrideJson?: Record<string, unknown>;
+  cssBundlePath?: string | null;
+}): Promise<PageType> {
+  const res = await fetch(`${API_BASE}/pages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const msg = await safeReadJson(res);
+    throw new Error(msg || "Create page failed");
+  }
+
+  return res.json();
+}
+
+export async function getPages(tenantId: string): Promise<PageType[]> {
+  const res = await fetch(`${API_BASE}/pages?tenantId=${encodeURIComponent(tenantId)}`);
+
+  if (!res.ok) {
+    const msg = await safeReadJson(res);
+    throw new Error(msg || "Load pages failed");
+  }
+
+  return res.json();
+}
+
+export async function getPageById(id: string): Promise<PageType> {
   const res = await fetch(`${API_BASE}/pages/${id}`);
   if (!res.ok) {
     throw new Error("Load page detail failed");
@@ -182,7 +220,7 @@ export async function updatePage(
     cssBundlePath?: string | null;
     syncLayoutToContent?: boolean;
   },
-): Promise<PageDto> {
+): Promise<PageType> {
   const res = await fetch(`${API_BASE}/pages/${id}`, {
     method: "PUT",
     headers: {

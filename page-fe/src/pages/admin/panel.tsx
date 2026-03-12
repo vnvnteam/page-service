@@ -9,8 +9,9 @@ export const adminPanels: Record<string, React.LazyExoticComponent<any>> = {
   "products.tag": lazy(() => import("@/pages/admin/blankPage")),
 
   // ===== Pages =====
-  "pages.list": lazy(() => import("@/pages/page/pageList")),
-  "pages.new": lazy(() => import("@/pages/page/pageNew")),
+  "pages.list": lazy(() => import("@/pages/page/listPage")),
+  "pages.new": lazy(() => import("@/pages/page/newPage")),
+  "pages.info": lazy(() => import("@/pages/page/infoPage")),
   
   // ===== Appearance =====
   "appearance": lazy(() => import("@/pages/layout/pageLayout")),

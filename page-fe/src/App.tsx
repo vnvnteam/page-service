@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./assets/App.css";
 import PageLayoutEditor from "@/pages/builder/pageLayout";
-import AdminLayout from "@/pages/admin/adminLayout";
+import AdminLayout from "@/pages/admin/layoutAdmin";
 
 function App() {
   return (

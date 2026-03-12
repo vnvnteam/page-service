@@ -2,7 +2,7 @@ import { Suspense, useEffect, useState, useMemo } from "react";
 import { useNavigate } from 'react-router-dom';
 import { adminMenu, AdminMenuItem, MenuAction } from "@/utils/menu";
 import AdminBlankPage from "@/pages/admin/blankPage";
-import AdminShell from "@/pages/admin/adminHeader";
+import AdminShell from "@/pages/admin/headerAdmin";
 import { adminPanels } from "@/pages/admin/panel";
 
 import { AdminNavProvider } from "@/pages/builder/navProvider";

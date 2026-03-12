@@ -1,7 +1,8 @@
 import Elysia from "elysia";
 // import { swagger } from '@elysiajs/swagger';
 import { cors } from "@elysiajs/cors";
-import { pageLayoutRouter } from "@/routes/layoutRouter";
+import { layoutRouter } from "@/routes/layoutRouter";
+import { pageRouter } from "@/routes/pageRouter";
 import { staticPlugin } from "@elysiajs/static";
 
 // Khởi tạo instance của Elysia
@@ -42,6 +43,7 @@ app.use(
   })
 );
 
-app.use(pageLayoutRouter);
+app.use(layoutRouter);
+app.use(pageRouter);
 
 export default app;

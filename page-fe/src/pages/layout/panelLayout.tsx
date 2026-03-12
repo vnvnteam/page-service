@@ -257,7 +257,7 @@ export default function LayoutPanel({
           );
         })}
 
-        <BlockOptionsEditor
+        {/* <BlockOptionsEditor
           zone={selectedBlock?.zone ?? "main"}
           block={selectedBlockData}
           onUpdateOptions={onUpdateOptions}
@@ -284,7 +284,7 @@ export default function LayoutPanel({
           >
             {JSON.stringify(layoutJson, null, 2)}
           </pre>
-        </details>
+        </details> */}
       </div>
     </div>
   );

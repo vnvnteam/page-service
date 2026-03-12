@@ -8,7 +8,7 @@ import {
   updatePageLayoutController,
 } from "@/controllers/layoutController";
 
-export const pageLayoutRouter = new Elysia({ prefix: "/page-layouts" });
+export const layoutRouter = new Elysia({ prefix: "/page-layouts" });
 
 const layoutBlockSchema = t.Object({
   id: t.String(),
@@ -26,19 +26,19 @@ const layoutJsonSchema = t.Object({
   }),
 });
 
-pageLayoutRouter.get("/", getPageLayoutsController, {
+layoutRouter.get("/", getPageLayoutsController, {
   query: t.Object({
     tenantId: t.String(),
   }),
 });
 
-pageLayoutRouter.get("/:id", getPageLayoutByIdController, {
+layoutRouter.get("/:id", getPageLayoutByIdController, {
   params: t.Object({
     id: t.String(),
   }),
 });
 
-pageLayoutRouter.post("/", createPageLayoutController, {
+layoutRouter.post("/", createPageLayoutController, {
   body: t.Object({
     tenantId: t.String(),
     name: t.String(),
@@ -50,7 +50,7 @@ pageLayoutRouter.post("/", createPageLayoutController, {
   }),
 });
 
-pageLayoutRouter.put("/:id", updatePageLayoutController, {
+layoutRouter.put("/:id", updatePageLayoutController, {
   params: t.Object({
     id: t.String(),
   }),
@@ -64,7 +64,7 @@ pageLayoutRouter.put("/:id", updatePageLayoutController, {
   }),
 });
 
-pageLayoutRouter.patch("/:id/active", updatePageLayoutActiveController, {
+layoutRouter.patch("/:id/active", updatePageLayoutActiveController, {
   params: t.Object({
     id: t.String(),
   }),
@@ -73,7 +73,7 @@ pageLayoutRouter.patch("/:id/active", updatePageLayoutActiveController, {
   }),
 });
 
-pageLayoutRouter.delete("/:id", deletePageLayoutController, {
+layoutRouter.delete("/:id", deletePageLayoutController, {
   params: t.Object({
     id: t.String(),
   }),

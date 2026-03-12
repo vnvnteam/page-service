@@ -51,3 +51,22 @@ export interface SelectedBlockRef {
   zone: LayoutZone;
   blockId: string;
 }
+
+export type PageType = {
+  id: string;
+  tenantId: string;
+  pageNo: number | null;
+  slug: string;
+  title: string | null;
+  desc: string | null;
+  seoTitle: string | null;
+  seoDesc: string | null;
+  status: string;
+  pageLayoutId: string | null;
+  pageLayoutVersion: number | null;
+  contentJson: unknown;
+  overrideJson: unknown;
+  cssBundlePath: string | null;
+  createdAt: string;
+  updatedAt: string;
+};

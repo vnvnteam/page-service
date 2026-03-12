@@ -16,7 +16,7 @@ export type AdminMenuItem = {
 };
 
 export const adminMenu: AdminMenuItem[] = [
-    { key: "appearance", label: "Trang", icon: "🎨", action: { type: "panel", panel: "pages.list" } },
+    { key: "pages", label: "Trang", icon: "🎨", action: { type: "panel", panel: "pages.list" } },
 
   {
     key: "products",

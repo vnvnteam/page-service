@@ -53,6 +53,8 @@ export default function PageCreatePage() {
   const maxChars = 1000;
   const leftChars = Math.max(0, maxChars - desc.length);
 
+  const EMPTY_LAYOUT_VALUE = "__none__";
+
   useEffect(() => {
     loadLayouts();
   }, []);
@@ -162,9 +164,9 @@ export default function PageCreatePage() {
         {/* Page layout */}
         <FieldRow label="Page Layout">
           <Select
-            value={pageLayoutId ?? ""}
+            value={pageLayoutId ?? EMPTY_LAYOUT_VALUE}
             onValueChange={(v) =>
-              setPageLayoutId(v === "" ? null : v)
+              setPageLayoutId(v === EMPTY_LAYOUT_VALUE ? null : v)
             }
           >
             <SelectTrigger className="w-full md:w-[280px]">
@@ -172,7 +174,7 @@ export default function PageCreatePage() {
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem value="">Không dùng layout</SelectItem>
+              <SelectItem value={EMPTY_LAYOUT_VALUE}>Không dùng layout</SelectItem>
 
               {pageLayouts.map((l) => (
                 <SelectItem key={l.id} value={l.id}>

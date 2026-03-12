@@ -19,9 +19,9 @@ import {
   getPageById,
   getPageLayouts,
   updatePage,
-  type PageDto,
-  type PageLayoutDto,
 } from "@/utils/api";
+
+import { PageLayoutEntity, PageType } from "@/types/layout";
 
 function FieldRow({
   label,
@@ -58,8 +58,8 @@ export default function PageInfoPage({ id }: Props) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const [page, setPage] = useState<PageDto | null>(null);
-  const [layouts, setLayouts] = useState<PageLayoutDto[]>([]);
+  const [page, setPage] = useState<PageType | null>(null);
+  const [layouts, setLayouts] = useState<PageLayoutEntity[]>([]);
 
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
@@ -71,6 +71,8 @@ export default function PageInfoPage({ id }: Props) {
 
   const maxChars = 1000;
   const leftChars = Math.max(0, maxChars - desc.length);
+
+  const EMPTY_LAYOUT_VALUE = "__none__";
 
   useEffect(() => {
     void loadData();
@@ -338,15 +340,15 @@ export default function PageInfoPage({ id }: Props) {
           <FieldRow label="Bố cục trang">
             <div className="flex flex-wrap items-center gap-2">
               <Select
-                value={pageLayoutId ?? "__none__"}
-                onValueChange={(v) => setPageLayoutId(v === "__none__" ? null : v)}
+                value={pageLayoutId ?? EMPTY_LAYOUT_VALUE}
+                onValueChange={(v) => setPageLayoutId(v === EMPTY_LAYOUT_VALUE ? null : v)}
               >
                 <SelectTrigger className="w-full md:w-[280px] h-10">
                   <SelectValue placeholder="Chọn layout" />
                 </SelectTrigger>
 
                 <SelectContent className="max-h-60 overflow-y-auto" position="popper">
-                  <SelectItem value="__none__">Không dùng layout</SelectItem>
+                  <SelectItem value={EMPTY_LAYOUT_VALUE}>Không dùng layout</SelectItem>
 
                   {layouts.map((layout) => (
                     <SelectItem key={layout.id} value={layout.id}>
