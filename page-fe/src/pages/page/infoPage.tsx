@@ -45,15 +45,14 @@ function FieldRow({
   );
 }
 
-type Props = {
-  id: string;
-};
-
 const TENANT_ID = "11111111-1111-1111-1111-111111111111";
-const PREVIEW_BASE = "http://cmstest.zawcyber.com";
+const PREVIEW_BASE = "http://localhost:7250";
 
-export default function PageInfoPage({ id }: Props) {
+export default function PageInfoPage() {
   const nav = useAdminNav();
+
+  const id = nav.activeParams?.id as string | undefined;
+  console.log('id',id);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -75,15 +74,21 @@ export default function PageInfoPage({ id }: Props) {
   const EMPTY_LAYOUT_VALUE = "__none__";
 
   useEffect(() => {
-    void loadData();
+    if (!id) {
+      setLoading(false);
+      setPage(null);
+      return;
+    }
+
+    void loadData(id);
   }, [id]);
 
-  const loadData = async () => {
+  const loadData = async (pageId: string) => {
     try {
       setLoading(true);
 
       const [pageData, layoutData] = await Promise.all([
-        getPageById(id),
+        getPageById(pageId),
         getPageLayouts(TENANT_ID),
       ]);
 
@@ -99,6 +104,7 @@ export default function PageInfoPage({ id }: Props) {
       setPageLayoutId(pageData.pageLayoutId ?? null);
     } catch (error) {
       console.error("Load page info failed:", error);
+      setPage(null);
     } finally {
       setLoading(false);
     }
@@ -154,13 +160,16 @@ export default function PageInfoPage({ id }: Props) {
     return <div className="p-4">Đang tải dữ liệu...</div>;
   }
 
+  if (!id) {
+    return <div className="p-4">Thiếu id trang</div>;
+  }
+
   if (!page) {
     return <div className="p-4">Không tìm thấy trang</div>;
   }
 
   return (
     <div className="border rounded-md bg-white shadow-sm">
-      {/* Top actions */}
       <div className="flex items-center gap-2 p-3">
         <Button variant="outline" onClick={() => nav.goBack()} disabled={!nav.canGoBack}>
           QUAY LẠI
@@ -183,7 +192,6 @@ export default function PageInfoPage({ id }: Props) {
 
       <Separator />
 
-      {/* Tabs */}
       <div className="flex border-b bg-muted/30">
         <button className="border-r bg-white px-6 py-3 text-sm font-medium text-foreground">
           TIÊU ĐỀ
@@ -191,21 +199,13 @@ export default function PageInfoPage({ id }: Props) {
 
         <button
           className="border-r px-6 py-3 text-sm font-medium text-muted-foreground"
-          onClick={() => nav.openPanel("pages.edit", { id: page.id, tab: "display" })}
+          onClick={() => nav.openPanel("pages.edit", { id: page.id, tab: "display", contentJson: page.contentJson })}
         >
           HIỂN THỊ
-        </button>
-
-        <button
-          className="px-6 py-3 text-sm font-medium text-muted-foreground"
-          onClick={() => nav.openPanel("pages.edit", { id: page.id, tab: "detail" })}
-        >
-          CHI TIẾT
         </button>
       </div>
 
       <div className="space-y-0">
-        {/* Title + homepage */}
         <div className="grid grid-cols-12 border-b">
           <div className="col-span-12 md:col-span-8 p-4">
             <div className="grid grid-cols-[90px_1fr] gap-4 items-center">
@@ -238,7 +238,6 @@ export default function PageInfoPage({ id }: Props) {
           </div>
         </div>
 
-        {/* Preview url */}
         <div className="border-b p-4">
           <div className="mb-2 text-sm font-medium text-muted-foreground">
             Đường dẫn xem trang
@@ -266,7 +265,6 @@ export default function PageInfoPage({ id }: Props) {
           </div>
         </div>
 
-        {/* Description */}
         <div className="border-b p-4">
           <div className="space-y-2">
             <div className="text-sm font-medium text-muted-foreground">
@@ -286,7 +284,6 @@ export default function PageInfoPage({ id }: Props) {
           </div>
         </div>
 
-        {/* Page type */}
         <div className="border-b p-4">
           <FieldRow label="Kiểu trang">
             <Select value={pageType} onValueChange={setPageType}>
@@ -305,7 +302,6 @@ export default function PageInfoPage({ id }: Props) {
           </FieldRow>
         </div>
 
-        {/* Parent + active */}
         <div className="border-b p-4">
           <FieldRow
             label="Nhánh cha"
@@ -335,7 +331,6 @@ export default function PageInfoPage({ id }: Props) {
           </FieldRow>
         </div>
 
-        {/* Layout */}
         <div className="p-4">
           <FieldRow label="Bố cục trang">
             <div className="flex flex-wrap items-center gap-2">

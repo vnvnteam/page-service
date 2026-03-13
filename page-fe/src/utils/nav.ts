@@ -4,6 +4,7 @@ import { useContext } from "react"
 
 export type AdminNav = {
   activePanel: string
+  activeParams?: Record<string, any>;
   openPanel: (key: string, param?: Record<string, any>) => void
   goBack: () => void
   canGoBack: boolean

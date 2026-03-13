@@ -19,44 +19,54 @@ export default function LayoutCanvas({
   onMove,
   onRemove,
 }: Props) {
+  const safeContent: UXContentJson = {
+    header: content?.header ?? [],
+    main: content?.main ?? [],
+    footer: content?.footer ?? [],
+  };
+
   return (
     <div className="h-full overflow-y-auto bg-slate-50 p-4">
       <div className="space-y-4">
-        {zones.map((zone) => (
-          <div key={zone} className="rounded-md border bg-white">
-            <div className="border-b px-4 py-3 text-sm font-semibold uppercase text-slate-700">
-              {zone}
+        {zones.map((zone) => {
+          const blocks = safeContent[zone];
+
+          return (
+            <div key={zone} className="rounded-md border bg-white">
+              <div className="border-b px-4 py-3 text-sm font-semibold uppercase text-slate-700">
+                {zone}
+              </div>
+
+              <div className="space-y-3 p-4">
+                {blocks.length === 0 && (
+                  <div className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+                    Chưa có block nào trong {zone}
+                  </div>
+                )}
+
+                {blocks.map((block, index) => {
+                  const isSelected =
+                    selected?.zone === zone && selected?.blockId === block.id;
+
+                  return (
+                    <BlockRow
+                      key={block.id}
+                      zone={zone}
+                      block={block}
+                      index={index}
+                      total={blocks.length}
+                      isSelected={isSelected}
+                      onSelect={() => onSelect({ zone, blockId: block.id })}
+                      onMoveUp={() => onMove(zone, block.id, -1)}
+                      onMoveDown={() => onMove(zone, block.id, 1)}
+                      onRemove={() => onRemove(zone, block.id)}
+                    />
+                  );
+                })}
+              </div>
             </div>
-
-            <div className="space-y-3 p-4">
-              {content[zone].length === 0 && (
-                <div className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
-                  Chưa có block nào trong {zone}
-                </div>
-              )}
-
-              {content[zone].map((block, index) => {
-                const isSelected =
-                  selected?.zone === zone && selected?.blockId === block.id;
-
-                return (
-                  <BlockRow
-                    key={block.id}
-                    zone={zone}
-                    block={block}
-                    index={index}
-                    total={content[zone].length}
-                    isSelected={isSelected}
-                    onSelect={() => onSelect({ zone, blockId: block.id })}
-                    onMoveUp={() => onMove(zone, block.id, -1)}
-                    onMoveDown={() => onMove(zone, block.id, 1)}
-                    onRemove={() => onRemove(zone, block.id)}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -84,6 +94,19 @@ function BlockRow({
   onRemove: () => void;
 }) {
   const def = BLOCK_REGISTRY[block.type];
+
+  if (!def) {
+    return (
+      <div className="rounded-md border border-red-200 bg-red-50 p-3">
+        <div className="text-sm font-semibold text-red-700">
+          Block type không tồn tại: {block.type}
+        </div>
+        <div className="mt-1 text-xs text-red-600">
+          Hãy kiểm tra BLOCK_REGISTRY hoặc dữ liệu block từ server.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

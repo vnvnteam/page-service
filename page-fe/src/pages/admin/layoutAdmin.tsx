@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Suspense, useEffect, useState, useMemo } from "react";
 import { useNavigate } from 'react-router-dom';
 import { adminMenu, AdminMenuItem, MenuAction } from "@/utils/menu";
@@ -13,6 +14,11 @@ function cx(...s: Array<string | false | undefined | null>) {
 
 const STORAGE_ACTIVE_PANEL = "admin.activePanel.v1";
 const STORAGE_EXPANDED_KEY = "admin.expandedKey.v1";
+
+type PanelState = {
+  key: string;
+  params?: Record<string, any>;
+};
 
 function isPanelAction(a?: MenuAction): a is { type: "panel"; panel: string } {
   return !!a && a.type === "panel";
@@ -31,12 +37,14 @@ export default function AdminPage() {
 
   const [hoverKey, setHoverKey] = useState<string | null>(null);
 
-  const [panelStack, setPanelStack] = useState<string[]>(() => {
+  const [panelStack, setPanelStack] = useState<PanelState[]>(() => {
     const saved = localStorage.getItem(STORAGE_ACTIVE_PANEL);
-    return [saved || "pages.list"];
+    return [{ key: saved || "pages.list", params: undefined }];
   });
 
-  const activePanel = panelStack[panelStack.length - 1];
+  const activeItem = panelStack[panelStack.length - 1];
+  const activePanel = activeItem.key;
+  const activeParams = activeItem.params;
 
   const [expandedKey, setExpandedKey] = useState<string | null>(() => {
     return localStorage.getItem(STORAGE_EXPANDED_KEY) || getTopKeyForActivePanel(activePanel);
@@ -52,8 +60,18 @@ export default function AdminPage() {
     if (expandedKey) localStorage.setItem(STORAGE_EXPANDED_KEY, expandedKey);
   }, [expandedKey]);
 
-  const openPanel = (key: string) => {
-    setPanelStack((prev) => (prev[prev.length - 1] === key ? prev : [...prev, key]));
+  const openPanel = (key: string, param?: Record<string, any>) => {
+    setPanelStack((prev) => {
+      const current = prev[prev.length - 1];
+
+      const isSamePanel = current?.key === key;
+      const isSameParams =
+        JSON.stringify(current?.params ?? null) === JSON.stringify(param ?? null);
+
+      if (isSamePanel && isSameParams) return prev;
+
+      return [...prev, { key, params: param }];
+    });
   };
 
   const goBack = () => {
@@ -62,7 +80,7 @@ export default function AdminPage() {
 
   const runAction = (action: MenuAction) => {
     if (action.type === "panel") {
-      setPanelStack([action.panel]);
+      setPanelStack([{ key: action.panel, params: undefined }]);
       return;
     }
     if (action.type === "navigate") {
@@ -182,6 +200,7 @@ export default function AdminPage() {
     <AdminNavProvider
       value={{
         activePanel,
+        activeParams,
         openPanel,
         goBack,
         canGoBack: panelStack.length > 1,

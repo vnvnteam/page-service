@@ -12,6 +12,7 @@ export const adminPanels: Record<string, React.LazyExoticComponent<any>> = {
   "pages.list": lazy(() => import("@/pages/page/listPage")),
   "pages.new": lazy(() => import("@/pages/page/newPage")),
   "pages.info": lazy(() => import("@/pages/page/infoPage")),
+  "pages.edit": lazy(() => import("@/pages/UX/layoutUX")),
   
   // ===== Appearance =====
   "appearance": lazy(() => import("@/pages/layout/pageLayout")),

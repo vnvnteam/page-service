@@ -215,6 +215,7 @@ export async function updatePage(
     seoTitle?: string | null;
     seoDesc?: string | null;
     status?: string;
+    contentJson?: unknown;
     pageLayoutId?: string | null;
     overrideJson?: Record<string, unknown>;
     cssBundlePath?: string | null;

@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BLOCK_REGISTRY } from "@/utils/uxBlock";
-import type { SelectedBlockRef, UXBlock, UXBlockType, UXContentJson, UXZone } from "@/types/ux";
+import type {
+  SelectedBlockRef,
+  UXBlock,
+  UXBlockType,
+  UXContentJson,
+  UXZone,
+} from "@/types/ux";
 
 /* -- utils-UX-builder -- */
 export function createEmptyContentJson(): UXContentJson {
@@ -54,13 +60,32 @@ export function itemsTextToArray(value: string): string[] {
 }
 
 /* -- use-UX-builder -- */
-export function useUXBuilder(initialContent: UXContentJson) {
-  const [content, setContent] = useState<UXContentJson>(initialContent);
+function normalizeContentJson(
+  content?: Partial<UXContentJson> | null,
+): UXContentJson {
+  return {
+    header: content?.header ?? [],
+    main: content?.main ?? [],
+    footer: content?.footer ?? [],
+  };
+}
+
+export function useUXBuilder(initialContent?: UXContentJson | null) {
+  const [content, setContent] = useState<UXContentJson>(() =>
+    normalizeContentJson(initialContent),
+  );
   const [selected, setSelected] = useState<SelectedBlockRef>(null);
+
+  useEffect(() => {
+    setContent(normalizeContentJson(initialContent));
+    setSelected(null);
+  }, [initialContent]);
 
   const selectedBlock = useMemo(() => {
     if (!selected) return null;
-    return content[selected.zone].find((b) => b.id === selected.blockId) ?? null;
+    return (
+      content[selected.zone].find((b) => b.id === selected.blockId) ?? null
+    );
   }, [content, selected]);
 
   function addBlock(zone: UXZone, type: UXBlockType) {
@@ -91,12 +116,18 @@ export function useUXBuilder(initialContent: UXContentJson) {
     });
   }
 
-  function updateBlockProps(zone: UXZone, blockId: string, nextProps: Record<string, any>) {
+  function updateBlockProps(
+    zone: UXZone,
+    blockId: string,
+    nextProps: Record<string, any>,
+  ) {
     setContent((prev) =>
       replaceZoneBlocks(
         prev,
         zone,
-        prev[zone].map((b) => (b.id === blockId ? { ...b, props: nextProps } : b)),
+        prev[zone].map((b) =>
+          b.id === blockId ? { ...b, props: nextProps } : b,
+        ),
       ),
     );
   }
